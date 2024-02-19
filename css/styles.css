@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+}
+
+header > .container {
+  background-color: rgb(76, 36, 116);
+  margin: 0 auto;
+}
+
+header > .container > h1 {
+  color: rgb(255, 255, 255);
+}
+
+.text-url {
+  margin-bottom: 1em;
+}
+
+.container .row > .text-url {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin-bottom: 1em;
+}
+
+.container .row .textarea {
+  display: flex;
+  flex-direction: column;
+}
+
+.container .row .textarea > textarea {
+  min-height: 30vh;
+}
+
+.save {
+  background-color: rgb(76, 36, 116);
+  color: rgb(255, 255, 255);
+}
+
+.submit {
+  text-align: right;
+}
