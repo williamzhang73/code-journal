@@ -19,12 +19,11 @@ const $image = document.querySelector(
 const $form = document.querySelector('.container form') as HTMLFormElement;
 console.log('$formElements', $form);
 if (!$photoInput || !$image || !$form) {
-  console.log('query failed');
+  throw new Error('query failed');
 }
 $photoInput?.addEventListener('input', (event: Event) => {
   const $eventTarget = event.target as HTMLInputElement;
   const imageUrl = $eventTarget.value;
-  console.log('url', imageUrl);
   $image.setAttribute('src', imageUrl);
 });
 
@@ -42,7 +41,7 @@ $form.addEventListener('submit', (event: Event) => {
     imagesUrl: urlValue,
     notes,
   };
-  data.entries.push(entryObject);
+  data.entries.unshift(entryObject);
   data.nextEntryId++;
   $image.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();

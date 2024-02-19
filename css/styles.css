@@ -55,3 +55,8 @@ header > .container > h1 {
 main form h2 {
   padding-left: 0.4em;
 }
+
+.container .row img {
+  width: 100%;
+  margin-left: -0.8em;
+}
