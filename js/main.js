@@ -2,7 +2,6 @@
 const $photoInput = document.querySelector('.photo-url');
 const $image = document.querySelector('.container .row img');
 const $form = document.querySelector('.container form');
-console.log('$formElements', $form);
 if (!$photoInput || !$image || !$form) {
   throw new Error('query failed');
 }
