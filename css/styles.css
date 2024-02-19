@@ -6,9 +6,14 @@ body {
   margin: 0 auto;
 }
 
-header > .container {
+header {
+  min-height: 3vh;
   background-color: rgb(76, 36, 116);
-  margin: 0 auto;
+  padding-top: 0;
+}
+
+header > .container {
+  border: solid rgb(76, 36, 116);
 }
 
 header > .container > h1 {
@@ -35,6 +40,7 @@ header > .container > h1 {
 
 .container .row .textarea > textarea {
   min-height: 30vh;
+  margin-bottom: 0.8em;
 }
 
 .save {
@@ -44,4 +50,8 @@ header > .container > h1 {
 
 .submit {
   text-align: right;
+}
+
+main form h2 {
+  padding-left: 0.4em;
 }
