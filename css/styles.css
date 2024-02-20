@@ -3,7 +3,7 @@
 }
 
 body {
-  border: 1px solid red;
+  /*   border: 1px solid red; */
   margin: 0 auto;
 }
 
@@ -17,7 +17,7 @@ header > .container {
   border: solid rgb(76, 36, 116);
 }
 
-header > .container > h1 {
+header > .container h1 {
   color: rgb(255, 255, 255);
 }
 
@@ -59,4 +59,33 @@ img {
 
 .container .row img {
   width: 100%;
+}
+
+.entriesLink {
+  color: rgb(255, 255, 255);
+  margin-top: 2em;
+  text-decoration: none;
+}
+
+.newEntriesLink {
+  color: rgb(255, 255, 255);
+  background-color: rgb(76, 36, 116);
+  border-radius: 9px;
+  height: 2.5em;
+  width: 4em;
+  margin-top: 0.6em;
+  text-decoration: none;
+  padding-left: 0.7em;
+  padding-top: 0.6em;
+}
+
+.entriesBar {
+  display: flex;
+  justify-content: space-between;
+  max-height: 4em;
+}
+
+.container .navbar {
+  display: flex;
+  column-gap: 3em;
 }

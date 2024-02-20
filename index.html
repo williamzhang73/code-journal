@@ -18,7 +18,10 @@
   <body>
     <header>
       <div class="container">
-        <h1>Code Journal</h1>
+        <div class="navbar">
+          <h1>Code Journal</h1>
+          <a href="" class="entriesLink">Entries</a>
+        </div>
       </div>
     </header>
     <main class="container">
@@ -66,6 +69,13 @@
       </div>
 
       <div data-view="entries" class="hidden">
+        <div class="hidden" data-view="no-entries">
+          <p>No entries have been recorded.</p>
+        </div>
+        <div class="entriesBar">
+          <h3 class="">Entries</h3>
+          <a href="" class="newEntriesLink">NEW</a>
+        </div>
         <ul>
           <!--    <li class="row">
             <div class="column-full column-half">

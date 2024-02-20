@@ -11,7 +11,10 @@ interface EntryObject {
   imagesUrl: string;
   notes: string;
 }
-
+const $ulElement = document.querySelector("div[data-view='entries'] > ul");
+if (!$ulElement) {
+  throw new Error('$ulElement query failed.');
+}
 const $photoInput = document.querySelector('.photo-url');
 const $image = document.querySelector(
   '.container .row img'
@@ -44,8 +47,16 @@ $form.addEventListener('submit', (event: Event) => {
   data.nextEntryId++;
   $image.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
+
+  const $li = renderEntry(entryObject);
+  $ulElement.append($li);
+  viewSwap('entries');
+  if (data.entries.length === 0) {
+    toggleNoEntries();
+  }
 });
 
+// render an entry object into a DOM element
 function renderEntry(entry: EntryObject): HTMLElement {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
@@ -74,15 +85,74 @@ function renderEntry(entry: EntryObject): HTMLElement {
   return $li;
 }
 
-const $ulElement = document.querySelector("div[data-view='entries'] > ul");
-if (!$ulElement) {
-  throw new Error('$ulElement query failed.');
-}
 /* console.log('$ulElement', $ulElement); */
 document.addEventListener('DOMContentLoaded', () => {
   for (const entry of data.entries) {
     const $li = renderEntry(entry);
-    console.log('$li', $li);
+    /*     console.log('$li', $li); */
     $ulElement.append($li);
   }
+});
+
+// if no entries found, display the message.
+const $messageElement = document.querySelector(
+  "div[data-view='entries']> div[data-view='no-entries']"
+);
+/* 
+console.log('$messageElement', $messageElement); */
+if (!$messageElement) {
+  throw new Error('the $messageElement query failed.');
+}
+function toggleNoEntries(): void {
+  $messageElement?.classList.toggle('hidden');
+}
+/* toggleNoEntries(); */
+/* console.log('toggleNoEntries: ', $messageElement.classList); */
+
+const $entriesElement = document.querySelector(
+  "div[data-view='entries']"
+) as HTMLDivElement;
+
+const $entryFormElement = document.querySelector(
+  "div[data-view='entry-form']"
+) as HTMLDivElement;
+
+if (!$entriesElement || !$entryFormElement) {
+  throw new Error('$entriesElement or $entryFormElement query failed');
+}
+// the funtion should show the view whose name is argumment.
+function viewSwap(view: string): void {
+  if (view === 'entries') {
+    $entriesElement.className = '';
+    $entryFormElement.className = 'hidden';
+  } else if (view === 'entry-form') {
+    $entriesElement.className = 'hidden';
+    $entryFormElement.className = '';
+  } else {
+    throw new Error('no such value in arguments of function viewSwap.');
+  }
+  data.view = view;
+}
+
+// entries in navbar
+const $anchorElement = document.querySelector('.entriesLink');
+if (!$anchorElement) {
+  throw new Error('the $anchorElement query failed');
+}
+/* console.log("$anchorElement", $anchorElement); */
+$anchorElement.addEventListener('click', (event: Event) => {
+  event.preventDefault();
+  /*   console.log('anchor click event triggered'); */
+  viewSwap('entries');
+});
+
+// add event handler to new anchor
+const $newEntriesLinkElement = document.querySelector('.newEntriesLink');
+if (!$newEntriesLinkElement) {
+  throw new Error('$newEntriesLinkElement query failed');
+}
+$newEntriesLinkElement.addEventListener('click', (event: Event) => {
+  event.preventDefault();
+  /*   console.log('newEntriesLink been clicked'); */
+  viewSwap('entry-form');
 });
