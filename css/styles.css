@@ -7,16 +7,12 @@ body {
 }
 
 header {
-  min-height: 3vh;
+  min-height: 14vh;
   background-color: rgb(76, 36, 116);
   padding-top: 0;
 }
 
-header > .container {
-  border: solid rgb(76, 36, 116);
-}
-
-header > .container > h1 {
+header > .container h1 {
   color: rgb(255, 255, 255);
 }
 
@@ -27,10 +23,16 @@ header > .container > h1 {
 .container .row > .text-url {
   display: flex;
   flex-direction: column;
+  row-gap: 0.5em;
 }
 
 .title {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+  border: 1px solid;
+}
+
+.photo-url {
+  border: 1px solid;
 }
 
 .container .row .textarea {
@@ -41,6 +43,7 @@ header > .container > h1 {
 .container .row .textarea > textarea {
   min-height: 30vh;
   margin-bottom: 0.8em;
+  border: 1px solid;
 }
 
 .save {
@@ -52,11 +55,53 @@ header > .container > h1 {
   text-align: right;
 }
 
-main form h2 {
-  padding-left: 0.4em;
+img {
+  width: 100%;
 }
 
 .container .row img {
   width: 100%;
-  margin-left: -0.8em;
+}
+
+.entriesLink {
+  color: rgb(255, 255, 255);
+  margin-top: 2em;
+  text-decoration: none;
+}
+
+.newEntriesLink {
+  color: rgb(255, 255, 255);
+  background-color: rgb(76, 36, 116);
+  border-radius: 9px;
+  height: 2.5em;
+  width: 4em;
+  margin-top: 0.6em;
+  text-decoration: none;
+  padding-left: 0.7em;
+  padding-top: 0.6em;
+}
+
+.entriesBar {
+  display: flex;
+  justify-content: space-between;
+  max-height: 4em;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.container .navbar {
+  display: flex;
+  column-gap: 1em;
+  padding-left: 1.75rem;
+}
+
+div[data-view='entries'] ul li {
+  display: flex;
+  row-gap: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+div[data-view='entries'] ul {
+  padding-right: 2em;
 }

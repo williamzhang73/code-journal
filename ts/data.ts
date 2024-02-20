@@ -1,4 +1,5 @@
 /* exported data */
+
 interface Data {
   view: string;
   entries: EntryObject[];
@@ -12,7 +13,6 @@ let data: Data = {
   editing: null,
   nextEntryId: 1,
 };
-
 window.addEventListener('beforeunload', () => {
   const serializedData = JSON.stringify(data);
   localStorage.setItem('data', serializedData);
