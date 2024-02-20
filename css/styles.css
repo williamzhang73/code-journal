@@ -3,11 +3,12 @@
 }
 
 body {
+  border: 1px solid red;
   margin: 0 auto;
 }
 
 header {
-  min-height: 3vh;
+  min-height: 14vh;
   background-color: rgb(76, 36, 116);
   padding-top: 0;
 }
@@ -52,11 +53,10 @@ header > .container > h1 {
   text-align: right;
 }
 
-main form h2 {
-  padding-left: 0.4em;
+img {
+  width: 100%;
 }
 
 .container .row img {
   width: 100%;
-  margin-left: -0.8em;
 }

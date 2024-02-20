@@ -1,12 +1,11 @@
 .hidden {
-  display: none !important;
+  /*   display: none !important; */
 }
 
 .container {
   max-width: 575px;
   margin: 0 auto;
   padding: 0 1.5rem;
-  padding-top: 0;
 }
 
 .row {
