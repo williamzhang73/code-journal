@@ -58,20 +58,18 @@ function renderEntry(entry) {
   $divElement2.append($pElement);
   return $li;
 }
-/* console.log('$ulElement', $ulElement); */
 document.addEventListener('DOMContentLoaded', () => {
   for (const entry of data.entries) {
     const $li = renderEntry(entry);
-    /*     console.log('$li', $li); */
     $ulElement.append($li);
   }
+  viewSwap(data.view);
+  toggleNoEntries();
 });
 // if no entries found, display the message.
 const $messageElement = document.querySelector(
   "div[data-view='entries']> div[data-view='no-entries']"
 );
-/*
-console.log('$messageElement', $messageElement); */
 if (!$messageElement) {
   throw new Error('the $messageElement query failed.');
 }
@@ -83,8 +81,6 @@ function toggleNoEntries() {
     $messageElement.className = 'hidden';
   }
 }
-/* toggleNoEntries(); */
-/* console.log('toggleNoEntries: ', $messageElement.classList); */
 const $entriesElement = document.querySelector("div[data-view='entries']");
 const $entryFormElement = document.querySelector("div[data-view='entry-form']");
 if (!$entriesElement || !$entryFormElement) {
@@ -108,10 +104,8 @@ const $anchorElement = document.querySelector('.entriesLink');
 if (!$anchorElement) {
   throw new Error('the $anchorElement query failed');
 }
-/* console.log("$anchorElement", $anchorElement); */
 $anchorElement.addEventListener('click', (event) => {
   event.preventDefault();
-  /*   console.log('anchor click event triggered'); */
   viewSwap('entries');
   toggleNoEntries();
 });
@@ -122,6 +116,5 @@ if (!$newEntriesLinkElement) {
 }
 $newEntriesLinkElement.addEventListener('click', (event) => {
   event.preventDefault();
-  /*   console.log('newEntriesLink been clicked'); */
   viewSwap('entry-form');
 });

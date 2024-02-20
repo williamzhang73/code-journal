@@ -3,7 +3,6 @@
 }
 
 body {
-  /*   border: 1px solid red; */
   margin: 0 auto;
 }
 
@@ -11,10 +10,6 @@ header {
   min-height: 14vh;
   background-color: rgb(76, 36, 116);
   padding-top: 0;
-}
-
-header > .container {
-  border: solid rgb(76, 36, 116);
 }
 
 header > .container h1 {
@@ -32,6 +27,11 @@ header > .container h1 {
 
 .title {
   margin-bottom: 1em;
+  border: 1px solid;
+}
+
+.photo-url {
+  border: 1px solid;
 }
 
 .container .row .textarea {
@@ -42,6 +42,7 @@ header > .container h1 {
 .container .row .textarea > textarea {
   min-height: 30vh;
   margin-bottom: 0.8em;
+  border: 1px solid;
 }
 
 .save {

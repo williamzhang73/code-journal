@@ -83,24 +83,23 @@ function renderEntry(entry: EntryObject): HTMLElement {
   return $li;
 }
 
-/* console.log('$ulElement', $ulElement); */
 document.addEventListener('DOMContentLoaded', () => {
   for (const entry of data.entries) {
     const $li = renderEntry(entry);
-    /*     console.log('$li', $li); */
     $ulElement.append($li);
   }
+  viewSwap(data.view);
+  toggleNoEntries();
 });
 
 // if no entries found, display the message.
 const $messageElement = document.querySelector(
   "div[data-view='entries']> div[data-view='no-entries']"
 ) as HTMLDivElement;
-/* 
-console.log('$messageElement', $messageElement); */
 if (!$messageElement) {
   throw new Error('the $messageElement query failed.');
 }
+
 function toggleNoEntries(): void {
   const entriesLength = data.entries.length;
   if (entriesLength === 0) {
@@ -109,8 +108,6 @@ function toggleNoEntries(): void {
     $messageElement.className = 'hidden';
   }
 }
-/* toggleNoEntries(); */
-/* console.log('toggleNoEntries: ', $messageElement.classList); */
 
 const $entriesElement = document.querySelector(
   "div[data-view='entries']"
@@ -123,6 +120,7 @@ const $entryFormElement = document.querySelector(
 if (!$entriesElement || !$entryFormElement) {
   throw new Error('$entriesElement or $entryFormElement query failed');
 }
+
 // the funtion should show the view whose name is argumment.
 function viewSwap(view: string): void {
   if (view === 'entries') {
@@ -142,10 +140,8 @@ const $anchorElement = document.querySelector('.entriesLink');
 if (!$anchorElement) {
   throw new Error('the $anchorElement query failed');
 }
-/* console.log("$anchorElement", $anchorElement); */
 $anchorElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
-  /*   console.log('anchor click event triggered'); */
   viewSwap('entries');
   toggleNoEntries();
 });
@@ -157,6 +153,5 @@ if (!$newEntriesLinkElement) {
 }
 $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
-  /*   console.log('newEntriesLink been clicked'); */
   viewSwap('entry-form');
 });

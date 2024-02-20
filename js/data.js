@@ -6,7 +6,6 @@ let data = {
   editing: null,
   nextEntryId: 1,
 };
-/* localStorage.clear(); */
 window.addEventListener('beforeunload', () => {
   const serializedData = JSON.stringify(data);
   localStorage.setItem('data', serializedData);
