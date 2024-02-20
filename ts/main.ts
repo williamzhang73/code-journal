@@ -51,9 +51,7 @@ $form.addEventListener('submit', (event: Event) => {
   const $li = renderEntry(entryObject);
   $ulElement.append($li);
   viewSwap('entries');
-  if (data.entries.length === 0) {
-    toggleNoEntries();
-  }
+  toggleNoEntries();
 });
 
 // render an entry object into a DOM element
@@ -97,14 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // if no entries found, display the message.
 const $messageElement = document.querySelector(
   "div[data-view='entries']> div[data-view='no-entries']"
-);
+) as HTMLDivElement;
 /* 
 console.log('$messageElement', $messageElement); */
 if (!$messageElement) {
   throw new Error('the $messageElement query failed.');
 }
 function toggleNoEntries(): void {
-  $messageElement?.classList.toggle('hidden');
+  const entriesLength = data.entries.length;
+  if (entriesLength === 0) {
+    $messageElement.className = '';
+  } else {
+    $messageElement.className = 'hidden';
+  }
 }
 /* toggleNoEntries(); */
 /* console.log('toggleNoEntries: ', $messageElement.classList); */
@@ -144,6 +147,7 @@ $anchorElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
   /*   console.log('anchor click event triggered'); */
   viewSwap('entries');
+  toggleNoEntries();
 });
 
 // add event handler to new anchor

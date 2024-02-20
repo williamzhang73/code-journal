@@ -34,11 +34,9 @@ $form.addEventListener('submit', (event) => {
   const $li = renderEntry(entryObject);
   $ulElement.append($li);
   viewSwap('entries');
-  if (data.entries.length === 0) {
-    toggleNoEntries();
-  }
+  toggleNoEntries();
 });
-//render an entry object into a DOM element
+// render an entry object into a DOM element
 function renderEntry(entry) {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $ulElement.append($li);
   }
 });
-//if no entries found, display the message.
+// if no entries found, display the message.
 const $messageElement = document.querySelector(
   "div[data-view='entries']> div[data-view='no-entries']"
 );
@@ -78,7 +76,12 @@ if (!$messageElement) {
   throw new Error('the $messageElement query failed.');
 }
 function toggleNoEntries() {
-  $messageElement?.classList.toggle('hidden');
+  const entriesLength = data.entries.length;
+  if (entriesLength === 0) {
+    $messageElement.className = '';
+  } else {
+    $messageElement.className = 'hidden';
+  }
 }
 /* toggleNoEntries(); */
 /* console.log('toggleNoEntries: ', $messageElement.classList); */
@@ -87,7 +90,7 @@ const $entryFormElement = document.querySelector("div[data-view='entry-form']");
 if (!$entriesElement || !$entryFormElement) {
   throw new Error('$entriesElement or $entryFormElement query failed');
 }
-//the funtion should show the view whose name is argumment.
+// the funtion should show the view whose name is argumment.
 function viewSwap(view) {
   if (view === 'entries') {
     $entriesElement.className = '';
@@ -100,7 +103,7 @@ function viewSwap(view) {
   }
   data.view = view;
 }
-//entries in navbar
+// entries in navbar
 const $anchorElement = document.querySelector('.entriesLink');
 if (!$anchorElement) {
   throw new Error('the $anchorElement query failed');
@@ -110,8 +113,9 @@ $anchorElement.addEventListener('click', (event) => {
   event.preventDefault();
   /*   console.log('anchor click event triggered'); */
   viewSwap('entries');
+  toggleNoEntries();
 });
-//add event handler to new anchor
+// add event handler to new anchor
 const $newEntriesLinkElement = document.querySelector('.newEntriesLink');
 if (!$newEntriesLinkElement) {
   throw new Error('$newEntriesLinkElement query failed');

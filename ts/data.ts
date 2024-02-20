@@ -1,4 +1,5 @@
 /* exported data */
+
 interface Data {
   view: string;
   entries: EntryObject[];
