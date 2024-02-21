@@ -56,8 +56,11 @@ $form.addEventListener('submit', (event: Event) => {
 
 // render an entry object into a DOM element
 function renderEntry(entry: EntryObject): HTMLElement {
+  /*   <i class="fas fa-pencil-alt"></i> */
+
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
+  $li.setAttribute('data-entry-id', entry.entryId.toString());
 
   const $imgElement = document.createElement('img');
   $imgElement.setAttribute('src', entry.imagesUrl);
@@ -71,13 +74,19 @@ function renderEntry(entry: EntryObject): HTMLElement {
 
   const $h4 = document.createElement('h4');
   $h4.textContent = entry.title;
+  /*   $h4.setAttribute('class', 'column-half'); */
   const $pElement = document.createElement('p');
   $pElement.textContent = entry.notes;
+  /* $pElement.setAttribute('class', 'column-full'); */
+
+  const $pencilIcon = document.createElement('i');
+  $pencilIcon.setAttribute('class', 'fas fa-pencil-alt');
 
   $li.append($divElement1);
   $li.append($divElement2);
   $divElement1.append($imgElement);
   $divElement2.append($h4);
+  $divElement2.append($pencilIcon);
   $divElement2.append($pElement);
 
   return $li;
@@ -154,4 +163,12 @@ if (!$newEntriesLinkElement) {
 $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
   viewSwap('entry-form');
+});
+
+$ulElement.addEventListener('click', (/* event: Event */) => {
+  /*   console.log("I am gonna editing"); */
+  /*   const $eventTarget=event.target; */
+  /* const $pencil=document.querySelector() */
+  /*  console.log("$eventTarget", $eventTarget); */
+  /* if($eventTarget===){} */
 });

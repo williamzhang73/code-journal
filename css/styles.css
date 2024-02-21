@@ -105,3 +105,26 @@ div[data-view='entries'] ul li {
 div[data-view='entries'] ul {
   padding-right: 2em;
 }
+
+div[data-view='entries'] ul li div {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div[data-view='entries'] ul li div h4 {
+  flex-basis: calc(100% / 2);
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+div[data-view='entries'] ul li div i {
+  flex-basis: calc(100% / 2);
+  position: relative;
+  top: 0.5em;
+  left: 42%;
+}
+
+div[data-view='entries'] ul li div p {
+  margin-top: 0;
+  flex-basis: 100%;
+}
