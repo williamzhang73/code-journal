@@ -15,18 +15,23 @@ const $ulElement = document.querySelector("div[data-view='entries'] > ul");
 if (!$ulElement) {
   throw new Error('$ulElement query failed.');
 }
-const $photoInput = document.querySelector('.photo-url');
-const $image = document.querySelector(
+
+const $EntryFromUrlElement = document.querySelector('.photo-url');
+const $imageElement = document.querySelector(
   '.container .row img'
 ) as HTMLImageElement;
 const $form = document.querySelector('.container form') as HTMLFormElement;
-if (!$photoInput || !$image || !$form) {
+const $entryFormH2Element = document.querySelector(
+  "div[data-view='entry-form'] h2"
+) as HTMLElement;
+
+if (!$EntryFromUrlElement || !$imageElement || !$form) {
   throw new Error('query failed');
 }
-$photoInput?.addEventListener('input', (event: Event) => {
+$EntryFromUrlElement?.addEventListener('input', (event: Event) => {
   const $eventTarget = event.target as HTMLInputElement;
   const imageUrl = $eventTarget.value;
-  $image.setAttribute('src', imageUrl);
+  $imageElement.setAttribute('src', imageUrl);
 });
 
 $form.addEventListener('submit', (event: Event) => {
@@ -45,7 +50,7 @@ $form.addEventListener('submit', (event: Event) => {
   };
   data.entries.unshift(entryObject);
   data.nextEntryId++;
-  $image.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
 
   const $li = renderEntry(entryObject);
@@ -62,9 +67,9 @@ function renderEntry(entry: EntryObject): HTMLElement {
   $li.setAttribute('class', 'row');
   $li.setAttribute('data-entry-id', entry.entryId.toString());
 
-  const $imgElement = document.createElement('img');
-  $imgElement.setAttribute('src', entry.imagesUrl);
-  $imgElement.setAttribute('alt', 'picture');
+  const $EntryFormImgElement = document.createElement('img');
+  $EntryFormImgElement.setAttribute('src', entry.imagesUrl);
+  $EntryFormImgElement.setAttribute('alt', 'picture');
 
   const $divElement1 = document.createElement('div');
   $divElement1.setAttribute('class', 'column-full column-half');
@@ -84,7 +89,7 @@ function renderEntry(entry: EntryObject): HTMLElement {
 
   $li.append($divElement1);
   $li.append($divElement2);
-  $divElement1.append($imgElement);
+  $divElement1.append($EntryFormImgElement);
   $divElement2.append($h4);
   $divElement2.append($pencilIcon);
   $divElement2.append($pElement);
@@ -165,10 +170,35 @@ $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   viewSwap('entry-form');
 });
 
-$ulElement.addEventListener('click', (/* event: Event */) => {
-  /*   console.log("I am gonna editing"); */
-  /*   const $eventTarget=event.target; */
-  /* const $pencil=document.querySelector() */
-  /*  console.log("$eventTarget", $eventTarget); */
-  /* if($eventTarget===){} */
+const $entryFormTitleElement = document.querySelector(
+  "div[data-view='entry-form'] .title"
+) as HTMLElement;
+/* console.log($entryFormTitleElement); */
+const $entryFormNotesElement = document.querySelector(
+  "div[data-view='entry-form'] .notes"
+) as HTMLElement;
+
+$ulElement.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  const ifPencilClicked = $eventTarget.matches('i');
+  if (ifPencilClicked) {
+    viewSwap('entry-form');
+    const $closestLiElement = $eventTarget.closest('li') as HTMLLIElement;
+    const entryId = $closestLiElement.dataset.entryId;
+    /*     console.log('entryId; ', entryId); */
+    const entries = data.entries;
+    for (const entry of entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.editing = entry;
+        $entryFormTitleElement.setAttribute('placeholder', entry.title);
+        $entryFormNotesElement.setAttribute('placeholder', entry.notes);
+        $EntryFromUrlElement.setAttribute('placeholder', entry.imagesUrl);
+        $imageElement.setAttribute('src', entry.imagesUrl);
+        $entryFormH2Element.textContent = 'Edit Entry';
+
+        break;
+      }
+    }
+    /*     console.log("data.editing: ", data.editing); */
+  }
 });
