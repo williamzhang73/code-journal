@@ -3,16 +3,16 @@ const $ulElement = document.querySelector("div[data-view='entries'] > ul");
 if (!$ulElement) {
   throw new Error('$ulElement query failed.');
 }
-const $EntryFromUrlElement = document.querySelector('.photo-url');
+const $entryFormUrlElement = document.querySelector('.photo-url');
 const $imageElement = document.querySelector('.container .row img');
 const $form = document.querySelector('.container form');
 const $entryFormH2Element = document.querySelector(
   "div[data-view='entry-form'] h2"
 );
-if (!$EntryFromUrlElement || !$imageElement || !$form) {
+if (!$entryFormUrlElement || !$imageElement || !$form) {
   throw new Error('query failed');
 }
-$EntryFromUrlElement?.addEventListener('input', (event) => {
+$entryFormUrlElement?.addEventListener('input', (event) => {
   const $eventTarget = event.target;
   const imageUrl = $eventTarget.value;
   $imageElement.setAttribute('src', imageUrl);
@@ -35,7 +35,7 @@ $form.addEventListener('submit', (event) => {
     data.nextEntryId++;
     $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
     const $li = renderEntry(entryObject);
-    $ulElement.insertBefore($li, $ulElement.firstChild);
+    $ulElement.prepend($li);
   } else {
     const entryObject = {
       entryId: data.editing.entryId,
@@ -43,7 +43,12 @@ $form.addEventListener('submit', (event) => {
       imagesUrl: urlValue,
       notes,
     };
-    data.entries[data.entries.length - entryObject.entryId] = entryObject;
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === entryObject.entryId) {
+        data.entries[i] = entryObject;
+        break;
+      }
+    }
     const $updatedLiElement = renderEntry(entryObject);
     const $liElements = document.querySelectorAll(
       "div[data-view='entries'] ul li"
@@ -53,10 +58,7 @@ $form.addEventListener('submit', (event) => {
     }
     for (const $liElement of $liElements) {
       if ($liElement.dataset.entryId === entryObject.entryId.toString()) {
-        console.log('two elements same');
         $liElement.replaceWith($updatedLiElement);
-      } else {
-        console.log('not same');
       }
     }
   }
@@ -70,9 +72,9 @@ function renderEntry(entry) {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
   $li.setAttribute('data-entry-id', entry.entryId.toString());
-  const $EntryFormImgElement = document.createElement('img');
-  $EntryFormImgElement.setAttribute('src', entry.imagesUrl);
-  $EntryFormImgElement.setAttribute('alt', 'picture');
+  const $entryFormImgElement = document.createElement('img');
+  $entryFormImgElement.setAttribute('src', entry.imagesUrl);
+  $entryFormImgElement.setAttribute('alt', 'picture');
   const $divElement1 = document.createElement('div');
   $divElement1.setAttribute('class', 'column-full column-half');
   const $divElement2 = document.createElement('div');
@@ -85,7 +87,7 @@ function renderEntry(entry) {
   $pencilIcon.setAttribute('class', 'fas fa-pencil-alt');
   $li.append($divElement1);
   $li.append($divElement2);
-  $divElement1.append($EntryFormImgElement);
+  $divElement1.append($entryFormImgElement);
   $divElement2.append($h4);
   $divElement2.append($pencilIcon);
   $divElement2.append($pElement);
@@ -148,20 +150,20 @@ const $newEntriesLinkElement = document.querySelector('.newEntriesLink');
 if (!$newEntriesLinkElement) {
   throw new Error('$newEntriesLinkElement query failed');
 }
+const $entryFormTitleElement = document.querySelector(
+  "div[data-view='entry-form'] .title"
+);
 $newEntriesLinkElement.addEventListener('click', (event) => {
   event.preventDefault();
   $form.reset();
   data.editing = null;
-  $entryFormTitleElement.setAttribute('value', '');
-  $entryFormNotesElement.textContent = '';
-  $EntryFromUrlElement.setAttribute('value', '');
-  $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $entryFormTitleElement.value = '';
+  $entryFormUrlElement.value = '';
+  $entryFormNotesElement.value = '';
+  $imageElement.src = 'images/placeholder-image-square.jpg';
   $entryFormH2Element.textContent = 'New Entry';
   viewSwap('entry-form');
 });
-const $entryFormTitleElement = document.querySelector(
-  "div[data-view='entry-form'] .title"
-);
 const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 );
@@ -176,10 +178,10 @@ $ulElement.addEventListener('click', (event) => {
     for (const entry of entries) {
       if (entry.entryId.toString() === entryId) {
         data.editing = entry;
-        $entryFormTitleElement.setAttribute('value', entry.title);
-        $entryFormNotesElement.textContent = entry.notes;
-        $EntryFromUrlElement.setAttribute('value', entry.imagesUrl);
-        $imageElement.setAttribute('src', entry.imagesUrl);
+        $entryFormTitleElement.value = entry.title;
+        $entryFormNotesElement.value = entry.notes;
+        $entryFormUrlElement.value = entry.imagesUrl;
+        $imageElement.src = entry.imagesUrl;
         $entryFormH2Element.textContent = 'Edit Entry';
         break;
       }
