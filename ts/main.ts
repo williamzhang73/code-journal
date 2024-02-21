@@ -15,18 +15,25 @@ const $ulElement = document.querySelector("div[data-view='entries'] > ul");
 if (!$ulElement) {
   throw new Error('$ulElement query failed.');
 }
-const $photoInput = document.querySelector('.photo-url');
-const $image = document.querySelector(
+
+const $entryFormUrlElement = document.querySelector(
+  '.photo-url'
+) as HTMLInputElement;
+const $imageElement = document.querySelector(
   '.container .row img'
 ) as HTMLImageElement;
 const $form = document.querySelector('.container form') as HTMLFormElement;
-if (!$photoInput || !$image || !$form) {
+const $entryFormH2Element = document.querySelector(
+  "div[data-view='entry-form'] h2"
+) as HTMLHeadingElement;
+
+if (!$entryFormUrlElement || !$imageElement || !$form) {
   throw new Error('query failed');
 }
-$photoInput?.addEventListener('input', (event: Event) => {
+$entryFormUrlElement?.addEventListener('input', (event: Event) => {
   const $eventTarget = event.target as HTMLInputElement;
   const imageUrl = $eventTarget.value;
-  $image.setAttribute('src', imageUrl);
+  $imageElement.setAttribute('src', imageUrl);
 });
 
 $form.addEventListener('submit', (event: Event) => {
@@ -36,32 +43,63 @@ $form.addEventListener('submit', (event: Event) => {
   const urlValue = $formElements.photoUrl.value;
   const notes = $formElements.notes.value;
 
-  const entryId = data.nextEntryId;
-  const entryObject: EntryObject = {
-    entryId,
-    title: titleValue,
-    imagesUrl: urlValue,
-    notes,
-  };
-  data.entries.unshift(entryObject);
-  data.nextEntryId++;
-  $image.setAttribute('src', 'images/placeholder-image-square.jpg');
-  $form.reset();
+  if (data.editing === null) {
+    const entryId = data.nextEntryId;
+    const entryObject: EntryObject = {
+      entryId,
+      title: titleValue,
+      imagesUrl: urlValue,
+      notes,
+    };
+    data.entries.unshift(entryObject);
+    data.nextEntryId++;
+    $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
 
-  const $li = renderEntry(entryObject);
-  $ulElement.append($li);
-  viewSwap('entries');
+    const $li = renderEntry(entryObject);
+    $ulElement.prepend($li);
+  } else {
+    const entryObject: EntryObject = {
+      entryId: data.editing.entryId,
+      title: titleValue,
+      imagesUrl: urlValue,
+      notes,
+    };
+
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === entryObject.entryId) {
+        data.entries[i] = entryObject;
+        break;
+      }
+    }
+
+    const $updatedLiElement = renderEntry(entryObject);
+    const $liElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryObject.entryId.toString()) {
+        $liElement.replaceWith($updatedLiElement);
+      }
+    }
+  }
+  data.editing = null;
+  $form.reset();
   toggleNoEntries();
+  viewSwap('entries');
 });
 
 // render an entry object into a DOM element
 function renderEntry(entry: EntryObject): HTMLElement {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
+  $li.setAttribute('data-entry-id', entry.entryId.toString());
 
-  const $imgElement = document.createElement('img');
-  $imgElement.setAttribute('src', entry.imagesUrl);
-  $imgElement.setAttribute('alt', 'picture');
+  const $entryFormImgElement = document.createElement('img');
+  $entryFormImgElement.setAttribute('src', entry.imagesUrl);
+  $entryFormImgElement.setAttribute('alt', 'picture');
 
   const $divElement1 = document.createElement('div');
   $divElement1.setAttribute('class', 'column-full column-half');
@@ -74,10 +112,14 @@ function renderEntry(entry: EntryObject): HTMLElement {
   const $pElement = document.createElement('p');
   $pElement.textContent = entry.notes;
 
+  const $pencilIcon = document.createElement('i');
+  $pencilIcon.setAttribute('class', 'fas fa-pencil-alt');
+
   $li.append($divElement1);
   $li.append($divElement2);
-  $divElement1.append($imgElement);
+  $divElement1.append($entryFormImgElement);
   $divElement2.append($h4);
+  $divElement2.append($pencilIcon);
   $divElement2.append($pElement);
 
   return $li;
@@ -88,8 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const $li = renderEntry(entry);
     $ulElement.append($li);
   }
+
   viewSwap(data.view);
   toggleNoEntries();
+  data.editing = null;
 });
 
 // if no entries found, display the message.
@@ -151,7 +195,44 @@ const $newEntriesLinkElement = document.querySelector('.newEntriesLink');
 if (!$newEntriesLinkElement) {
   throw new Error('$newEntriesLinkElement query failed');
 }
+const $entryFormTitleElement = document.querySelector(
+  "div[data-view='entry-form'] .title"
+) as HTMLInputElement;
 $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
+  $form.reset();
+  data.editing = null;
+  $entryFormTitleElement.value = '';
+  $entryFormUrlElement.value = '';
+  $entryFormNotesElement.value = '';
+  $imageElement.src = 'images/placeholder-image-square.jpg';
+  $entryFormH2Element.textContent = 'New Entry';
   viewSwap('entry-form');
+});
+
+const $entryFormNotesElement = document.querySelector(
+  "div[data-view='entry-form'] .notes"
+) as HTMLTextAreaElement;
+
+$ulElement.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  const ifPencilClicked = $eventTarget.matches('i');
+  if (ifPencilClicked) {
+    viewSwap('entry-form');
+    const $closestLiElement = $eventTarget.closest('li') as HTMLLIElement;
+    const entryId = $closestLiElement.dataset.entryId;
+    const entries = data.entries;
+    for (const entry of entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.editing = entry;
+        $entryFormTitleElement.value = entry.title;
+        $entryFormNotesElement.value = entry.notes;
+        $entryFormUrlElement.value = entry.imagesUrl;
+        $imageElement.src = entry.imagesUrl;
+        $entryFormH2Element.textContent = 'Edit Entry';
+
+        break;
+      }
+    }
+  }
 });
