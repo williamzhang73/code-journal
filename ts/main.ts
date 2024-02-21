@@ -41,28 +41,52 @@ $form.addEventListener('submit', (event: Event) => {
   const urlValue = $formElements.photoUrl.value;
   const notes = $formElements.notes.value;
 
-  const entryId = data.nextEntryId;
-  const entryObject: EntryObject = {
-    entryId,
-    title: titleValue,
-    imagesUrl: urlValue,
-    notes,
-  };
-  data.entries.unshift(entryObject);
-  data.nextEntryId++;
-  $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
-  $form.reset();
+  if (data.editing === null) {
+    const entryId = data.nextEntryId;
+    const entryObject: EntryObject = {
+      entryId,
+      title: titleValue,
+      imagesUrl: urlValue,
+      notes,
+    };
+    data.entries.unshift(entryObject);
+    data.nextEntryId++;
+    $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
 
-  const $li = renderEntry(entryObject);
-  $ulElement.append($li);
-  viewSwap('entries');
+    const $li = renderEntry(entryObject);
+    $ulElement.insertBefore($li, $ulElement.firstChild);
+  } else {
+    const entryObject: EntryObject = {
+      entryId: data.editing.entryId,
+      title: titleValue,
+      imagesUrl: urlValue,
+      notes,
+    };
+    data.entries[data.entries.length - entryObject.entryId] = entryObject;
+    const $updatedLiElement = renderEntry(entryObject);
+    const $liElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryObject.entryId.toString()) {
+        console.log('two elements same');
+        $liElement.replaceWith($updatedLiElement);
+      } else {
+        console.log('not same');
+      }
+    }
+  }
+  data.editing = null;
+  $form.reset();
   toggleNoEntries();
+  viewSwap('entries');
 });
 
 // render an entry object into a DOM element
 function renderEntry(entry: EntryObject): HTMLElement {
-  /*   <i class="fas fa-pencil-alt"></i> */
-
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
   $li.setAttribute('data-entry-id', entry.entryId.toString());
@@ -79,10 +103,8 @@ function renderEntry(entry: EntryObject): HTMLElement {
 
   const $h4 = document.createElement('h4');
   $h4.textContent = entry.title;
-  /*   $h4.setAttribute('class', 'column-half'); */
   const $pElement = document.createElement('p');
   $pElement.textContent = entry.notes;
-  /* $pElement.setAttribute('class', 'column-full'); */
 
   const $pencilIcon = document.createElement('i');
   $pencilIcon.setAttribute('class', 'fas fa-pencil-alt');
@@ -102,8 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const $li = renderEntry(entry);
     $ulElement.append($li);
   }
+
   viewSwap(data.view);
   toggleNoEntries();
+  data.editing = null;
 });
 
 // if no entries found, display the message.
@@ -167,13 +191,19 @@ if (!$newEntriesLinkElement) {
 }
 $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   event.preventDefault();
+  $form.reset();
+  data.editing = null;
+  $entryFormTitleElement.setAttribute('value', '');
+  $entryFormNotesElement.textContent = '';
+  $EntryFromUrlElement.setAttribute('value', '');
+  $imageElement.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $entryFormH2Element.textContent = 'New Entry';
   viewSwap('entry-form');
 });
 
 const $entryFormTitleElement = document.querySelector(
   "div[data-view='entry-form'] .title"
 ) as HTMLElement;
-/* console.log($entryFormTitleElement); */
 const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 ) as HTMLElement;
@@ -185,20 +215,18 @@ $ulElement.addEventListener('click', (event: Event) => {
     viewSwap('entry-form');
     const $closestLiElement = $eventTarget.closest('li') as HTMLLIElement;
     const entryId = $closestLiElement.dataset.entryId;
-    /*     console.log('entryId; ', entryId); */
     const entries = data.entries;
     for (const entry of entries) {
       if (entry.entryId.toString() === entryId) {
         data.editing = entry;
-        $entryFormTitleElement.setAttribute('placeholder', entry.title);
-        $entryFormNotesElement.setAttribute('placeholder', entry.notes);
-        $EntryFromUrlElement.setAttribute('placeholder', entry.imagesUrl);
+        $entryFormTitleElement.setAttribute('value', entry.title);
+        $entryFormNotesElement.textContent = entry.notes;
+        $EntryFromUrlElement.setAttribute('value', entry.imagesUrl);
         $imageElement.setAttribute('src', entry.imagesUrl);
         $entryFormH2Element.textContent = 'Edit Entry';
 
         break;
       }
     }
-    /*     console.log("data.editing: ", data.editing); */
   }
 });
