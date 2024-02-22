@@ -162,6 +162,8 @@ $newEntriesLinkElement.addEventListener('click', (event) => {
   $entryFormNotesElement.value = '';
   $imageElement.src = 'images/placeholder-image-square.jpg';
   $entryFormH2Element.textContent = 'New Entry';
+  $divDeleteElement.classList.add('hidden');
+  $divSaveElement.className = 'defaultSubmit';
   viewSwap('entry-form');
 });
 const $entryFormNotesElement = document.querySelector(
@@ -190,7 +192,7 @@ $ulElement.addEventListener('click', (event) => {
         break;
       }
     }
-    // edit layout of button delete entity and save button
+    // edit layout of delete and save button
     $divDeleteElement.classList.remove('hidden');
     $divSaveElement.className = 'submit';
     $deleteEntry.setAttribute('data-entry-id', entryId);
