@@ -213,6 +213,7 @@ $deleteEntry.addEventListener('click', () => {
 $cancelModal.addEventListener('click', () => {
   $dialogElement.close();
 });
+//add event listener to confirm button at dialog
 $confirmModal.addEventListener('click', () => {
   /*   console.log('confirm button clicked'); */
   const entryId = $deleteEntry.dataset.entryId;
@@ -238,6 +239,19 @@ $confirmModal.addEventListener('click', () => {
         break;
       }
     }
+    const $hiddenMessage = document.querySelector(
+      "div[data-view='entries'] div[data-view='no-entries']"
+    );
+    if (!$hiddenMessage) {
+      throw new Error('$hiddenMessage query failed');
+    }
+    console.log('$hiddenMessage: ', $hiddenMessage);
+    if (data.entries.length === 0) {
+      $hiddenMessage.className = '';
+    } else {
+      $hiddenMessage.className = 'hidden';
+    }
+    viewSwap('entries');
     $dialogElement.close();
   } else {
     throw new Error('entryId not exists.');
