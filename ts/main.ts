@@ -207,6 +207,9 @@ $newEntriesLinkElement.addEventListener('click', (event: Event) => {
   $entryFormNotesElement.value = '';
   $imageElement.src = 'images/placeholder-image-square.jpg';
   $entryFormH2Element.textContent = 'New Entry';
+
+  $divDeleteElement.classList.add('hidden');
+  $divSaveElement.className = 'defaultSubmit';
   viewSwap('entry-form');
 });
 
@@ -214,13 +217,17 @@ const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 ) as HTMLTextAreaElement;
 
+const $divDeleteElement = document.querySelector(
+  "div[data-view='entry-form'] .row .deleteButton"
+) as HTMLDivElement;
+const $divSaveElement = document.getElementById('savediv') as HTMLDivElement;
 $ulElement.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   const ifPencilClicked = $eventTarget.matches('i');
   if (ifPencilClicked) {
     viewSwap('entry-form');
     const $closestLiElement = $eventTarget.closest('li') as HTMLLIElement;
-    const entryId = $closestLiElement.dataset.entryId;
+    const entryId = $closestLiElement.dataset.entryId as string;
     const entries = data.entries;
     for (const entry of entries) {
       if (entry.entryId.toString() === entryId) {
@@ -234,5 +241,75 @@ $ulElement.addEventListener('click', (event: Event) => {
         break;
       }
     }
+
+    // edit layout of delete and save button
+    $divDeleteElement.classList.remove('hidden');
+    $divSaveElement.className = 'submit';
+    $deleteEntry.setAttribute('data-entry-id', entryId);
+  }
+});
+
+const $deleteEntry = document.querySelector(
+  "div[data-view='entry-form'] .row .delete"
+) as HTMLButtonElement;
+const $dialogElement = document.querySelector('dialog') as HTMLDialogElement;
+const $cancelModal = document.querySelector(
+  '.dismiss-modal'
+) as HTMLButtonElement;
+const $confirmModal = document.querySelector(
+  'dialog .confirm-modal'
+) as HTMLButtonElement;
+if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
+  throw new Error('modal query failed');
+}
+$deleteEntry.addEventListener('click', (event: Event) => {
+  event.preventDefault();
+  $dialogElement.showModal();
+});
+$cancelModal.addEventListener('click', () => {
+  $dialogElement.close();
+});
+
+$confirmModal.addEventListener('click', () => {
+  const entryId = $deleteEntry.dataset.entryId;
+  if (entryId) {
+    let i = 0;
+    for (const entry of data.entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.entries.splice(i, 1);
+        break;
+      }
+      i++;
+    }
+
+    const $liElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryId) {
+        $liElement.remove();
+        break;
+      }
+    }
+
+    const $hiddenMessage = document.querySelector(
+      "div[data-view='entries'] div[data-view='no-entries']"
+    ) as HTMLDivElement;
+    if (!$hiddenMessage) {
+      throw new Error('$hiddenMessage query failed');
+    }
+    if (data.entries.length === 0) {
+      $hiddenMessage.className = '';
+    } else {
+      $hiddenMessage.className = 'hidden';
+    }
+
+    viewSwap('entries');
+    $dialogElement.close();
+  } else {
+    throw new Error('entryId not exists.');
   }
 });

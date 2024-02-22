@@ -49,4 +49,8 @@
   div[data-view='entries'] ul li {
     margin-bottom: 0.5em;
   }
+
+  div[data-view='entry-form'] .row .deleteButton {
+    padding-left: 2%;
+  }
 }

@@ -162,11 +162,17 @@ $newEntriesLinkElement.addEventListener('click', (event) => {
   $entryFormNotesElement.value = '';
   $imageElement.src = 'images/placeholder-image-square.jpg';
   $entryFormH2Element.textContent = 'New Entry';
+  $divDeleteElement.classList.add('hidden');
+  $divSaveElement.className = 'defaultSubmit';
   viewSwap('entry-form');
 });
 const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 );
+const $divDeleteElement = document.querySelector(
+  "div[data-view='entry-form'] .row .deleteButton"
+);
+const $divSaveElement = document.getElementById('savediv');
 $ulElement.addEventListener('click', (event) => {
   const $eventTarget = event.target;
   const ifPencilClicked = $eventTarget.matches('i');
@@ -186,5 +192,65 @@ $ulElement.addEventListener('click', (event) => {
         break;
       }
     }
+    // edit layout of delete and save button
+    $divDeleteElement.classList.remove('hidden');
+    $divSaveElement.className = 'submit';
+    $deleteEntry.setAttribute('data-entry-id', entryId);
+  }
+});
+const $deleteEntry = document.querySelector(
+  "div[data-view='entry-form'] .row .delete"
+);
+const $dialogElement = document.querySelector('dialog');
+const $cancelModal = document.querySelector('.dismiss-modal');
+const $confirmModal = document.querySelector('dialog .confirm-modal');
+if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
+  throw new Error('modal query failed');
+}
+$deleteEntry.addEventListener('click', (event) => {
+  event.preventDefault();
+  $dialogElement.showModal();
+});
+$cancelModal.addEventListener('click', () => {
+  $dialogElement.close();
+});
+$confirmModal.addEventListener('click', () => {
+  const entryId = $deleteEntry.dataset.entryId;
+  if (entryId) {
+    let i = 0;
+    for (const entry of data.entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.entries.splice(i, 1);
+        break;
+      }
+      i++;
+    }
+    const $liElements = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryId) {
+        $liElement.remove();
+        break;
+      }
+    }
+    const $hiddenMessage = document.querySelector(
+      "div[data-view='entries'] div[data-view='no-entries']"
+    );
+    if (!$hiddenMessage) {
+      throw new Error('$hiddenMessage query failed');
+    }
+    if (data.entries.length === 0) {
+      $hiddenMessage.className = '';
+    } else {
+      $hiddenMessage.className = 'hidden';
+    }
+    viewSwap('entries');
+    $dialogElement.close();
+  } else {
+    throw new Error('entryId not exists.');
   }
 });
