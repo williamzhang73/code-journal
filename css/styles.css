@@ -49,10 +49,32 @@ header > .container h1 {
 .save {
   background-color: rgb(76, 36, 116);
   color: rgb(255, 255, 255);
+  flex-basis: calc(100% / 2);
 }
 
-.submit {
+div[data-view='entry-form'] .row .deleteButton {
+  width: calc(100% / 2);
+  text-align: left;
+}
+
+div[data-view='entry-form'] .row .deleteButton button {
+  color: rgb(245, 92, 89);
+  border: none;
+  text-decoration: underline;
+  background-color: rgb(255, 255, 255);
+  font-size: xx-small;
+}
+
+div[data-view='entry-form'] .row .submit {
+  width: calc(100% / 2);
   text-align: right;
+  padding-right: 2.5%;
+}
+
+div[data-view='entry-form'] .row .defaultSubmit {
+  width: 100%;
+  text-align: right;
+  padding-right: 2.5%;
 }
 
 img {
@@ -127,4 +149,9 @@ div[data-view='entries'] ul li div i {
 div[data-view='entries'] ul li div p {
   margin-top: 0;
   flex-basis: 100%;
+}
+
+dialog .modal-action {
+  display: flex;
+  justify-content: space-around;
 }

@@ -214,6 +214,11 @@ const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 ) as HTMLTextAreaElement;
 
+const $divDeleteElement = document.querySelector(
+  "div[data-view='entry-form'] .row .deleteButton"
+) as HTMLDivElement;
+const $divSaveElement = document.getElementById('savediv') as HTMLDivElement;
+/* console.log("$divSaveElement: ", $divSaveElement); */
 $ulElement.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   const ifPencilClicked = $eventTarget.matches('i');
@@ -234,5 +239,26 @@ $ulElement.addEventListener('click', (event: Event) => {
         break;
       }
     }
+
+    // edit layout of button delete entity and save button
+    $divDeleteElement.classList.remove('hidden');
+    $divSaveElement.className = 'submit';
   }
+});
+
+const $deleteEntry = document.querySelector(
+  "div[data-view='entry-form'] .row .delete"
+) as HTMLButtonElement;
+const $dialogElement = document.querySelector('dialog') as HTMLDialogElement;
+const $cancelModal = document.querySelector(
+  '.dismiss-modal'
+) as HTMLButtonElement;
+if (!$deleteEntry || !$dialogElement || !$cancelModal) {
+  throw new Error('$deleteEntry or $dialogElement query failed');
+}
+$deleteEntry.addEventListener('click', () => {
+  $dialogElement.showModal();
+});
+$cancelModal.addEventListener('click', () => {
+  $dialogElement.close();
 });

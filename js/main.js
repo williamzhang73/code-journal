@@ -167,6 +167,11 @@ $newEntriesLinkElement.addEventListener('click', (event) => {
 const $entryFormNotesElement = document.querySelector(
   "div[data-view='entry-form'] .notes"
 );
+const $divDeleteElement = document.querySelector(
+  "div[data-view='entry-form'] .row .deleteButton"
+);
+const $divSaveElement = document.getElementById('savediv');
+/* console.log("$divSaveElement: ", $divSaveElement); */
 $ulElement.addEventListener('click', (event) => {
   const $eventTarget = event.target;
   const ifPencilClicked = $eventTarget.matches('i');
@@ -186,5 +191,22 @@ $ulElement.addEventListener('click', (event) => {
         break;
       }
     }
+    //edit layout of button delete entity and save button
+    $divDeleteElement.classList.remove('hidden');
+    $divSaveElement.className = 'submit';
   }
+});
+const $deleteEntry = document.querySelector(
+  "div[data-view='entry-form'] .row .delete"
+);
+const $dialogElement = document.querySelector('dialog');
+const $cancelModal = document.querySelector('.dismiss-modal');
+if (!$deleteEntry || !$dialogElement || !$cancelModal) {
+  throw new Error('$deleteEntry or $dialogElement query failed');
+}
+$deleteEntry.addEventListener('click', () => {
+  $dialogElement.showModal();
+});
+$cancelModal.addEventListener('click', () => {
+  $dialogElement.close();
 });
