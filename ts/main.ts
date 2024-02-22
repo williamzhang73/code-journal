@@ -262,7 +262,8 @@ const $confirmModal = document.querySelector(
 if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
   throw new Error('modal query failed');
 }
-$deleteEntry.addEventListener('click', () => {
+$deleteEntry.addEventListener('click', (event: Event) => {
+  event.preventDefault();
   $dialogElement.showModal();
 });
 $cancelModal.addEventListener('click', () => {
