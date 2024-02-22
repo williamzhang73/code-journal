@@ -218,7 +218,6 @@ const $divDeleteElement = document.querySelector(
   "div[data-view='entry-form'] .row .deleteButton"
 ) as HTMLDivElement;
 const $divSaveElement = document.getElementById('savediv') as HTMLDivElement;
-/* console.log("$divSaveElement: ", $divSaveElement); */
 $ulElement.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   const ifPencilClicked = $eventTarget.matches('i');
@@ -262,18 +261,14 @@ if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
 }
 $deleteEntry.addEventListener('click', () => {
   $dialogElement.showModal();
-  /*   console.log("entryId: ", $deleteEntry.dataset.entryId); */
 });
 $cancelModal.addEventListener('click', () => {
   $dialogElement.close();
 });
 
-// add event listener to confirm button at dialog
 $confirmModal.addEventListener('click', () => {
-  /*   console.log('confirm button clicked'); */
   const entryId = $deleteEntry.dataset.entryId;
   if (entryId) {
-    /*     console.log('entryId: ', entryId); */
     let i = 0;
     for (const entry of data.entries) {
       if (entry.entryId.toString() === entryId) {
@@ -292,7 +287,6 @@ $confirmModal.addEventListener('click', () => {
     for (const $liElement of $liElements) {
       if ($liElement.dataset.entryId === entryId) {
         $liElement.remove();
-
         break;
       }
     }
@@ -303,7 +297,6 @@ $confirmModal.addEventListener('click', () => {
     if (!$hiddenMessage) {
       throw new Error('$hiddenMessage query failed');
     }
-    console.log('$hiddenMessage: ', $hiddenMessage);
     if (data.entries.length === 0) {
       $hiddenMessage.className = '';
     } else {
