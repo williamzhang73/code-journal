@@ -191,9 +191,10 @@ $ulElement.addEventListener('click', (event) => {
         break;
       }
     }
-    //edit layout of button delete entity and save button
+    // edit layout of button delete entity and save button
     $divDeleteElement.classList.remove('hidden');
     $divSaveElement.className = 'submit';
+    $deleteEntry.setAttribute('data-entry-id', entryId);
   }
 });
 const $deleteEntry = document.querySelector(
@@ -201,12 +202,44 @@ const $deleteEntry = document.querySelector(
 );
 const $dialogElement = document.querySelector('dialog');
 const $cancelModal = document.querySelector('.dismiss-modal');
-if (!$deleteEntry || !$dialogElement || !$cancelModal) {
-  throw new Error('$deleteEntry or $dialogElement query failed');
+const $confirmModal = document.querySelector('dialog .confirm-modal');
+if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
+  throw new Error('modal query failed');
 }
 $deleteEntry.addEventListener('click', () => {
   $dialogElement.showModal();
+  /*   console.log("entryId: ", $deleteEntry.dataset.entryId); */
 });
 $cancelModal.addEventListener('click', () => {
   $dialogElement.close();
+});
+$confirmModal.addEventListener('click', () => {
+  /*   console.log('confirm button clicked'); */
+  const entryId = $deleteEntry.dataset.entryId;
+  if (entryId) {
+    /*     console.log('entryId: ', entryId); */
+    let i = 0;
+    for (const entry of data.entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.entries.splice(i, 1);
+        break;
+      }
+      i++;
+    }
+    const $liElements = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryId) {
+        $liElement.remove();
+        break;
+      }
+    }
+    $dialogElement.close();
+  } else {
+    throw new Error('entryId not exists.');
+  }
 });

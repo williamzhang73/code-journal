@@ -225,7 +225,7 @@ $ulElement.addEventListener('click', (event: Event) => {
   if (ifPencilClicked) {
     viewSwap('entry-form');
     const $closestLiElement = $eventTarget.closest('li') as HTMLLIElement;
-    const entryId = $closestLiElement.dataset.entryId;
+    const entryId = $closestLiElement.dataset.entryId as string;
     const entries = data.entries;
     for (const entry of entries) {
       if (entry.entryId.toString() === entryId) {
@@ -243,6 +243,7 @@ $ulElement.addEventListener('click', (event: Event) => {
     // edit layout of button delete entity and save button
     $divDeleteElement.classList.remove('hidden');
     $divSaveElement.className = 'submit';
+    $deleteEntry.setAttribute('data-entry-id', entryId);
   }
 });
 
@@ -253,12 +254,48 @@ const $dialogElement = document.querySelector('dialog') as HTMLDialogElement;
 const $cancelModal = document.querySelector(
   '.dismiss-modal'
 ) as HTMLButtonElement;
-if (!$deleteEntry || !$dialogElement || !$cancelModal) {
-  throw new Error('$deleteEntry or $dialogElement query failed');
+const $confirmModal = document.querySelector(
+  'dialog .confirm-modal'
+) as HTMLButtonElement;
+if (!$deleteEntry || !$dialogElement || !$cancelModal || !$confirmModal) {
+  throw new Error('modal query failed');
 }
 $deleteEntry.addEventListener('click', () => {
   $dialogElement.showModal();
+  /*   console.log("entryId: ", $deleteEntry.dataset.entryId); */
 });
 $cancelModal.addEventListener('click', () => {
   $dialogElement.close();
+});
+$confirmModal.addEventListener('click', () => {
+  /*   console.log('confirm button clicked'); */
+  const entryId = $deleteEntry.dataset.entryId;
+  if (entryId) {
+    /*     console.log('entryId: ', entryId); */
+    let i = 0;
+    for (const entry of data.entries) {
+      if (entry.entryId.toString() === entryId) {
+        data.entries.splice(i, 1);
+
+        break;
+      }
+      i++;
+    }
+
+    const $liElements: NodeListOf<HTMLElement> = document.querySelectorAll(
+      "div[data-view='entries'] ul li"
+    );
+    if (!$liElements) {
+      throw new Error('$liElements query failed');
+    }
+    for (const $liElement of $liElements) {
+      if ($liElement.dataset.entryId === entryId) {
+        $liElement.remove();
+        break;
+      }
+    }
+    $dialogElement.close();
+  } else {
+    throw new Error('entryId not exists.');
+  }
 });
